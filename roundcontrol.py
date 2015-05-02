@@ -18,6 +18,7 @@ class player:
     def __init__(self, hands, initalMoney = 100):
         self.hands = list(hands)
         self.betHistory = []
+        self.betMoney = []
         self.moneyInHand = int(initalMoney)
 
     def holdcards(self):
@@ -25,14 +26,14 @@ class player:
         return cards
 
     def bet(self, newbet):
-        self.betHistory.append(int(newbet))
+        self.betMoney.append(int(newbet))
         self.moneyInHand -= int(newbet)
         return self.moneyInHand
 
-    def currentMoney():
+    def currentMoney(self):
         return self.moneyInHand
 
-    def resetCards(hands):
+    def resetCards(self, hands):
         self.hands = list(hands)
 
 class roundcontrol:
