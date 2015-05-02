@@ -10,8 +10,10 @@
 #-------------------------------------------------------------------------------
 import deal_compare as dc
 import numpy as np
+import pickle
+import initial_52
 
-TOTAL_ROUND = int(4)
+TOTAL_TURN = int(4)
 
 class player:
     #betting = ["fold","call","raise"]
@@ -61,7 +63,7 @@ class roundcontrol:
             self.playerList[i].resetCards(onehand)
             i += 1
 
-    def boardcard(self, round=TOTAL_ROUND-1):
+    def boardcard(self, round=TOTAL_TURN-1):
         if round == 0:
             cards = []
         else:
@@ -77,6 +79,13 @@ class roundcontrol:
             total += player.potMoney
         return total
 
+# constants
+allCards = initial_52.cards_vec()
+card2n = dict(zip(allCards, np.arange(52)))
+n2card = dict(zip(np.arange(52), allCards))
+
+Comparedresult= pickle.load(open('Comparedresult.pcl', 'r'))
+rankresult= pickle.load(open('rankresult.pcl', 'r'))
 
 def main():
     numplayers = 2
