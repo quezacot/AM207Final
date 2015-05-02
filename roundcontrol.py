@@ -15,19 +15,25 @@ TOTAL_ROUND = int(4)
 
 class player:
     #betting = ["fold","call","raise"]
-    def __init__(self, hands):
+    def __init__(self, hands, initalMoney = 100):
         self.hands = list(hands)
-        self.bethis = []
+        self.betHistory = []
+        self.moneyInHand = int(initalMoney)
 
     def holdcards(self):
         cards = list(self.hands)
         return cards
 
     def bet(self, newbet):
-        self.bethis.append(newbet)
+        self.betHistory.append(int(newbet))
+        self.moneyInHand -= int(newbet)
+        return self.moneyInHand
 
+    def currentMoney():
+        return self.moneyInHand
 
-
+    def resetCards(hands):
+        self.hands = list(hands)
 
 class roundcontrol:
     def __init__(self, players):
