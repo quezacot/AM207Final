@@ -16,6 +16,9 @@ import pandas as pd
 import pickle
 import initial_52
 
+ALLCOMP = None
+ALLCARDS = None
+
 # find out the best five cards from the seven cards
 def bestfive(sevencards):
     '''
