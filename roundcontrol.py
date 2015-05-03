@@ -17,29 +17,30 @@ class player:
     #betting = ["fold","call","raise"]
     def __init__(self, isComputer, holeCards, initalMoney = 500):
         self.holeCards = list(holeCards)
-        self.betHistory = []
-        self.betMoney = []
+        self.betHistory = [[] for i in range(4)]
         self.moneyInHand = int(initalMoney)
         self.potMoney = 0
         self.lastBet = 0
         self.isComputer = isComputer
-        
+        self.lastAction = ""
 
     def holdcards(self):
         cards = list(self.holeCards)
         return cards
 
-    def bet(self, newbet):
+    def bet(self, newbet, actionType):
         self.betMoney.append(int(newbet))
         self.moneyInHand -= int(newbet)
         self.potMoney += int(newbet)
         self.lastBet = newbet
+        self.lastAction = actionType
         return self.moneyInHand
 
     def resetCards(self, holeCards):
         self.holeCards = list(holeCards)
         self.potMoney = 0
         self.lastBet = 0
+        self.lastAction = ""
 
 class roundcontrol:
     def __init__(self, numPlayer = 2):
@@ -47,6 +48,7 @@ class roundcontrol:
         pubcards, plycards = dc.texassim(self.numPlayer) #deal
         self.publicCards = pubcards #board cards
         self.playerList = []
+        self.stageIndex = 0
         
         isComputer = False
         for onehand in plycards:
@@ -56,16 +58,19 @@ class roundcontrol:
     def resetGame(self):
         pubcards, plycards = dc.texassim(self.numPlayer) #deal
         self.publicCards = pubcards
+        self.stageIndex = 0
         i = 0
         for onehand in plycards:
             self.playerList[i].resetCards(onehand)
             i += 1
 
-    def boardcard(self, round=TOTAL_ROUND-1):
-        if round == 0:
+    def boardcard(self):
+        #print "self.stageIndex", self.stageIndex
+
+        if self.stageIndex == 0:
             cards = []
         else:
-            cards = list( self.publicCards[:2+round] )
+            cards = list( self.publicCards[:2+self.stageIndex] )
         return cards
 
     def player(self, no):
