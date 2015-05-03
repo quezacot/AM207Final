@@ -18,7 +18,6 @@ import initial_52
 
 ALLCOMP = None
 ALLCARDS = None
-TYPEWIN = None
 TYPELIST = [u'straightflush', u'fourkind', u'fullhouse', u'flush',
             u'straight', u'threekind', u'twopairs', u'onepair', u'highcard']
 
@@ -163,11 +162,6 @@ def initialize():
     # initialize ALLCARDS
     global ALLCARDS
     ALLCARDS = initial_52.cards_vec()
-    # initialize TYPEWIN
-    global TYPEWIN
-    filehandler = open("TypeWin.pkl","rb")
-    TYPEWIN = pickle.load(filehandler)
-    filehandler.close()
 
 if __name__ == 'winningprob':
    initialize()
