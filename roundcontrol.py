@@ -29,11 +29,17 @@ class player:
         return cards
 
     def bet(self, newbet, actionType):
-        self.betMoney.append(int(newbet))
+        #self.betMoney.append(int(newbet))
         self.moneyInHand -= int(newbet)
         self.potMoney += int(newbet)
         self.lastBet = newbet
         self.lastAction = actionType
+
+        print "Your money in hand now is", self.moneyInHand
+        print "Your in pot now total is", self.potMoney
+        print "-------------------------------"
+        print
+
         return self.moneyInHand
 
     def resetCards(self, holeCards):
