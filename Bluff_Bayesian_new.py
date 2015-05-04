@@ -6,6 +6,42 @@
 import numpy as np
 
 
+# In[ ]:
+
+def Two_records(Hist_Record):
+    PS=[]
+    BL=[]
+    if len(Hist_Record)==1:
+        return np.asarray(PS),np.asarray(BL)
+    
+    for i in range(len(Hist_Record)-1):
+        each_record=Hist_Record[i]
+        if each_record==[]:
+            continue
+        for j in range(len(each_record)):
+            if each_record[j]==[]:
+                continue
+            for item in each_record[j]:
+                PS.append(item[2])
+                BL.append(int(item[1]<0.5))
+            
+            
+    return np.asarray(PS),np.asarray(BL)
+
+
+# In[1]:
+
+def current_PS(Hist_Record):
+    cur_record=Hist_Record[-1]
+    cur_ps=None
+    for item in cur_record:
+        if item==[]:
+            return cur_ps
+        else:
+            cur_ps=item[-1][2]
+    return cur_ps
+
+
 # In[56]:
 
 def estimate_bluff(PS_percent_list,Bluff_list,current_PS,sig1=10,sig2=10,N=1000,K=100):
@@ -49,4 +85,20 @@ def estimate_bluff(PS_percent_list,Bluff_list,current_PS,sig1=10,sig2=10,N=1000,
         
         result[i]=np.mean(f(ath1[idx], ath2[idx],current_PS))
     return np.mean(result)
+
+
+# In[ ]:
+
+def Bluff(Hist_Record):
+    cur_ps=current_PS(Hist_Record)
+    
+    PS,BL=Two_records(Hist_Record)
+    
+    if cur_ps==None:
+        return 0.5
+    
+    if len(PS)==0:
+        return 0.5
+    
+    return estimate_bluff(PS,BL,cur_ps,sig1=10,sig2=10,N=1000,K=100)
 

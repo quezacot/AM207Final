@@ -17,23 +17,28 @@ class player:
     #betting = ["fold","call","raise"]
     def __init__(self, isComputer, holeCards, initalMoney = 500):
         self.holeCards = list(holeCards)
-        self.betHistory = [[] for i in range(4)]
+        self.betHistory = [[[] for i in range(4)]]
         self.moneyInHand = int(initalMoney)
         self.potMoney = 0
         self.lastBet = 0
         self.isComputer = isComputer
         self.lastAction = ""
+        self.numOfGames = 0
+        self.currentStageIndex = -1
 
     def holdcards(self):
         cards = list(self.holeCards)
         return cards
 
-    def bet(self, newbet, actionType):
-        #self.betMoney.append(int(newbet))
+    def bet(self, newbet, actionType, pi = 0, potMoneyTotal = 0):
         self.moneyInHand -= int(newbet)
         self.potMoney += int(newbet)
-        self.lastBet = newbet
+        self.lastBet = int(newbet)
         self.lastAction = actionType
+
+        if self.currentStageIndex != -1:
+            myTuple = (pi, float(newbet)/float(potMoneyTotal), actionType)
+            self.betHistory[self.numOfGames][self.currentStageIndex].append(myTuple)
 
         print "Your money in hand now is", self.moneyInHand
         print "Your in pot now total is", self.potMoney
@@ -47,6 +52,9 @@ class player:
         self.potMoney = 0
         self.lastBet = 0
         self.lastAction = ""
+        self.numOfGames += 1
+        self.currentStageIndex = 0
+        self.betHistory.append([[] for i in range(4)])
 
 class roundcontrol:
     def __init__(self, numPlayer = 2):
@@ -54,7 +62,7 @@ class roundcontrol:
         pubcards, plycards = dc.texassim(self.numPlayer) #deal
         self.publicCards = pubcards #board cards
         self.playerList = []
-        self.stageIndex = 0
+        self.stageIndex = -1
         
         isComputer = False
         for onehand in plycards:
@@ -64,16 +72,21 @@ class roundcontrol:
     def resetGame(self):
         pubcards, plycards = dc.texassim(self.numPlayer) #deal
         self.publicCards = pubcards
-        self.stageIndex = 0
+        self.stageIndex = -1
         i = 0
         for onehand in plycards:
             self.playerList[i].resetCards(onehand)
             i += 1
 
+    def increStageIndex(self):
+        self.stageIndex += 1
+        for i in xrange(2):
+            self.playerList[i].currentStageIndex += 1
+
     def boardcard(self):
         #print "self.stageIndex", self.stageIndex
 
-        if self.stageIndex == 0:
+        if self.stageIndex == 0 or self.stageIndex == -1:
             cards = []
         else:
             cards = list( self.publicCards[:2+self.stageIndex] )
@@ -110,7 +123,6 @@ def main():
 
     print "Your best hand is: ",
     print maxhands[playerID]
-
 
 
 if __name__ == '__main__':
