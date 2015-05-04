@@ -26,11 +26,11 @@ def preflopMakeAction(game, playerIndex, tableIndex = 1):
             betValue = math.ceil((pi + 0.5)*max(1, game.player(1-playerIndex).lastBet) * 2)
             betValue = min(betValue, game.player(playerIndex).moneyInHand)
             print "Computer", playerIndex, "Raise ", int(betValue)
-            game.player(playerIndex).bet(betValue, "R")
+            game.player(playerIndex).bet(betValue, "R", pi, game.currentmoneyinpot())
         else:
             callValue = abs(game.player(0).potMoney - game.player(1).potMoney)
             print "Computer", playerIndex, "Call ", callValue
-            game.player(playerIndex).bet(callValue, "C")
+            game.player(playerIndex).bet(callValue, "C", pi, game.currentmoneyinpot())
     else:
         while True:
             action = raw_input("Enter your decision: input 'C' for Call or 'R' for Raise:\n")
@@ -38,7 +38,7 @@ def preflopMakeAction(game, playerIndex, tableIndex = 1):
                 print "You can only Call now!"
             if action == "C" or tableIndex == 4:
                 callValue = abs(game.player(0).potMoney - game.player(1).potMoney)
-                game.player(playerIndex).bet(callValue, "C")
+                game.player(playerIndex).bet(callValue, "C", pi, game.currentmoneyinpot())
                 print
                 break
             elif action == "R":
@@ -52,7 +52,7 @@ def preflopMakeAction(game, playerIndex, tableIndex = 1):
                     while int(betAmount) < betValue or int(betAmount) > game.player(playerIndex).moneyInHand:
                         print "Your min and max raise values are", int(betValue), int(game.player(playerIndex).moneyInHand)
                         betAmount = raw_input("Enter the amount you want to raise:\n")
-                game.player(playerIndex).bet(int(betAmount), "R")
+                game.player(playerIndex).bet(int(betAmount), "R", pi, game.currentmoneyinpot())
                 print
                 if betAmount > 0.2 * min(game.player(0).moneyInHand, game.player(1).moneyInHand):
                     tableIndex = 3
@@ -76,8 +76,10 @@ def preflop(game, alterDealer):
     print "Computer Cards: ", game.player(1).holdcards()
     
     # start with computer small and move first
-    game.player(alterDealer).bet(2, "")
+    game.player(alterDealer).bet(2, "", )
     game.player(1 - alterDealer).bet(1, "")
+
+    game.increStageIndex()
     
     print "Player 0 money:", game.player(0).moneyInHand
     print "Player 1 money:", game.player(1).moneyInHand
