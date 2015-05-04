@@ -7,6 +7,7 @@ Sail Wu
 Xide Xia
 
 
+Texas Hold 'em Strategy Design
 10000 search
 not using five cards table: 9.43 s
 using five cards table: 448 ms
