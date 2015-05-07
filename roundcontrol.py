@@ -37,7 +37,7 @@ class player:
         self.lastAction = actionType
 
         if self.currentStageIndex != -1:
-            myTuple = (pi, float(newbet)/float(potMoneyTotal), actionType)
+            myTuple = (actionType, pi, float(newbet)/float(potMoneyTotal))
             self.betHistory[self.numOfGames][self.currentStageIndex].append(myTuple)
 
         #if actionType == "F":
