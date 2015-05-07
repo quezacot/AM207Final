@@ -123,7 +123,7 @@ def preflop(game, alterDealer):
         else:
             winIndex = 1
             print "Player 1 wins!\n"
-        return False, winIndex
+        return False, 1-winIndex
     return True, -1
 
 
