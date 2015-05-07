@@ -53,12 +53,13 @@ def determintype(fivecards):
 
 #==============================================================================#
 
-def winc_river(boardcards, holecards, exclude=[], samplerate=1.0):
+def winc_river(boardcards, holecards, exclude=[], samplerate=1.0, opponentholecards=None):
     assert( len(boardcards) == 5 ) #river has five boardcards
     myhighfive, mystrength = bestfive(boardcards + holecards)
     # the rest possible cards of opponent's hole cards
     restcards = possiblecards(boardcards + holecards + exclude)
-    opponentholecards = list(itertools.combinations(restcards, 2))
+    if opponentholecards is None:
+        opponentholecards = list(itertools.combinations(restcards, 2))
     sampleidx = np.arange(len(opponentholecards))
     if samplerate > 1: # only sample part of combinations
         numsamples = int(len(opponentholecards)/samplerate)
@@ -76,8 +77,8 @@ def winc_river(boardcards, holecards, exclude=[], samplerate=1.0):
             tiecount += 1
     return wincount, tiecount, totalcount
 
-def winp_river(boardcards, holecards, exclude=[], samplerate=1.0):
-    wincount, tiecount, totalcount= winc_river(boardcards, holecards, exclude, samplerate=samplerate)
+def winp_river(boardcards, holecards, exclude=[], samplerate=1.0, opponentholecards=None):
+    wincount, tiecount, totalcount= winc_river(boardcards, holecards, exclude, samplerate=samplerate, opponentholecards=opponentholecards)
     return ( wincount + 0.5*tiecount ) / totalcount
 
 #==============================================================================#
