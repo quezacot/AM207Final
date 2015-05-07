@@ -62,6 +62,10 @@ class player:
     def cleanHistory(self):
         self.betHistory[self.numOfGames] = []
 
+    def addMoney(money = 500):
+        self.moneyInHand += int(money)
+        self.potMoney = 0
+
 class roundcontrol:
     def __init__(self, numPlayer = 2):
         self.numPlayer = numPlayer
