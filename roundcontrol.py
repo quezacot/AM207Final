@@ -121,7 +121,7 @@ class roundcontrol:
     def addMoney(self, money = 500):
         self.player(0).addMoney(money)
         self.player(1).addMoney(money)
-        print "Money," money, "added for each player"
+        print "Money", money, "added for each player"
 
 def main():
     numplayers = 2
