@@ -13,13 +13,6 @@ import Strength_HMM as hmm
 
 
 def calcBetValue(pi, potSize):
-    '''
-    pi < 1/6, check/fold
-    pi < 1/4, check/raise [1/4, 1/2] pot
-    pi < 7/22, check/raise [1/2, 7/8] pot
-    pi < 1/2, check/raise [7/8, 1] pot
-    pi > 1/2, check/raise [1/3, 2/3] pot
-    '''
     assert(pi < 0.5)
     return int(float(potSize)/(1/pi-2))
 
@@ -63,7 +56,7 @@ def postflopMakeAction(game, playerIndex, pis):
                     print
 
             else:
-                if pi < 0.6:
+                if 0.2*pi + np.random.uniform() < 0.6:
                     print "Player", playerIndex, "Call Value", int(min(callValue, game.player(playerIndex).moneyInHand))
                     game.player(playerIndex).bet(min(callValue, game.player(playerIndex).moneyInHand), "C", pi, game.currentmoneyinpot())
                     print
@@ -81,7 +74,7 @@ def postflopMakeAction(game, playerIndex, pis):
         else:
             # Opponent Called
             if pi < 0.5:
-                if np.random.uniform() + pi*0.1 < 0.4:
+                if np.random.uniform() + pi*0.1 < 0.45:
                     print "Player", playerIndex, "Check"
                     game.player(playerIndex).bet(0, "K", pi, game.currentmoneyinpot())
                     print
@@ -93,7 +86,7 @@ def postflopMakeAction(game, playerIndex, pis):
                     game.player(playerIndex).bet(betValue, "R", pi, game.currentmoneyinpot())
                     print
             else:
-                if np.random.uniform() + pi*0.1 < 0.4:
+                if np.random.uniform() + pi*0.1 < 0.45:
                     print "Player", playerIndex, "Check"
                     game.player(playerIndex).bet(0, "K", pi, game.currentmoneyinpot())
                     print
