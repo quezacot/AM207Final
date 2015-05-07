@@ -13,7 +13,7 @@ def Two_records(Hist_Record):
     BL=[]
     if len(Hist_Record)==1:
         return np.asarray(PS),np.asarray(BL)
-    
+
     for i in range(len(Hist_Record)-1):
         each_record=Hist_Record[i]
         if each_record==[]:
@@ -24,8 +24,8 @@ def Two_records(Hist_Record):
             for item in each_record[j]:
                 PS.append(item[2])
                 BL.append(int(item[1]<0.5))
-            
-            
+
+
     return np.asarray(PS),np.asarray(BL)
 
 
@@ -45,9 +45,12 @@ def current_PS(Hist_Record):
 # In[56]:
 
 def estimate_bluff(PS_percent_list,Bluff_list,current_PS,sig1=10,sig2=10,N=1000,K=100):
-    
+
     # the bluff function
     def f(theta1, theta2, t):
+##        print "theta1", theta1, type(theta1)
+##        print "theta2", theta2, type(theta2)
+##        print "t", t, type(t)
         return 1.0 / (1 + np.exp(-theta1 -theta2*t))
     # the posterior distribution
     def posterior(theta1, theta2, T=PS_percent_list,I=Bluff_list,sig1=sig1,sig2=sig2):
@@ -66,23 +69,23 @@ def estimate_bluff(PS_percent_list,Bluff_list,current_PS,sig1=10,sig2=10,N=1000,
         likelihood = likely(T,I)
 
         # posterior = prior * likelihood for each given prior
-        return prior * np.prod(likelihood)  
-    
+        return prior * np.prod(likelihood)
+
     Posterior=np.vectorize(posterior)
-    
+
     result=np.zeros(K)
-    
+
     for i in range(K):
         ath1 = np.random.uniform(low=-30, high=30, size=N)
 
         ath2 = np.random.uniform(low=-30, high=30, size=N)
 
-        ptr=Posterior(ath1,ath2) 
+        ptr=Posterior(ath1,ath2)
 
         ysp =  np.random.uniform(low=0, high=np.max(ptr), size=N)
 
         idx = (ysp<ptr)
-        
+
         result[i]=np.mean(f(ath1[idx], ath2[idx],current_PS))
     return np.mean(result)
 
@@ -91,14 +94,14 @@ def estimate_bluff(PS_percent_list,Bluff_list,current_PS,sig1=10,sig2=10,N=1000,
 
 def Bluff(Hist_Record):
     cur_ps=current_PS(Hist_Record)
-    
+
     PS,BL=Two_records(Hist_Record)
-    
+
     if cur_ps==None:
         return 0.5
-    
+
     if len(PS)==0:
         return 0.5
-    
+
     return estimate_bluff(PS,BL,cur_ps,sig1=10,sig2=10,N=1000,K=100)
 
