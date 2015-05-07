@@ -40,6 +40,9 @@ class player:
             myTuple = (pi, float(newbet)/float(potMoneyTotal), actionType)
             self.betHistory[self.numOfGames][self.currentStageIndex].append(myTuple)
 
+        #if actionType == "F":
+        #    self.betHistory[self.numOfGames] = []
+
         print "Your money in hand now is", self.moneyInHand
         print "Your in pot now total is", self.potMoney
         print "-------------------------------"
@@ -53,8 +56,11 @@ class player:
         self.lastBet = 0
         self.lastAction = ""
         self.numOfGames += 1
-        self.currentStageIndex = 0
+        self.currentStageIndex = -1
         self.betHistory.append([[] for i in range(4)])
+
+    def cleanHistory(self):
+        self.betHistory[self.numOfGames] = []
 
 class roundcontrol:
     def __init__(self, numPlayer = 2):
@@ -100,6 +106,13 @@ class roundcontrol:
         for player in self.playerList:
             total += player.potMoney
         return total
+
+    def cleanHistory(self):
+        if self.player(0).lastAction == "F" or self.player(1).lastAction == "F":
+            self.player(0).cleanHistory()
+            self.player(1).cleanHistory()
+            print "No cards shown because game ended early!"
+        return 
 
 
 def main():

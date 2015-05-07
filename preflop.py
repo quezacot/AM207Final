@@ -13,10 +13,6 @@ import winningprob
 
 
 # In[ ]:
-
-
-
-
 # In[6]:
 
 def preflopMakeAction(game, playerIndex, tableIndex = 1):
@@ -76,7 +72,7 @@ def preflop(game, alterDealer):
     print "Computer Cards: ", game.player(1).holdcards()
     
     # start with computer small and move first
-    game.player(alterDealer).bet(2, "", )
+    game.player(alterDealer).bet(2, "")
     game.player(1 - alterDealer).bet(1, "")
 
     game.increStageIndex()
