@@ -62,7 +62,7 @@ class player:
     def cleanHistory(self):
         self.betHistory[self.numOfGames] = []
 
-    def addMoney(money = 500):
+    def addMoney(self, money = 500):
         self.moneyInHand += int(money)
         self.potMoney = 0
 
@@ -118,6 +118,10 @@ class roundcontrol:
             print "No cards shown because game ended early!"
         return 
 
+    def addMoney(self, money = 500):
+        self.player(0).addMoney(money)
+        self.player(1).addMoney(money)
+        print "Money," money, "added for each player"
 
 def main():
     numplayers = 2
