@@ -12,6 +12,30 @@ import Bluff_Bayesian_new as bluff
 import Strength_HMM as hmm
 
 
+def adjustpibystate(pi, cardstate):
+    #states = ('Low', 'Medium','High', 'No_State')
+    lowerpart = pi * 0.75
+    if cardstate == 'Low':
+        if pi <= 1.0/3.0:
+            return pi*3 * 0.25 + lowerpart
+        else: #pi > 1.0/3.0
+            return 0.25 + lowerpart
+    elif cardstate == 'Medium':
+        if pi <= 1.0/3.0:
+            return lowerpart
+        elif pi > 1.0/3.0 and pi <= 2.0/3.0:
+            return (pi - 1.0/3.0)*3 * 0.25 + lowerpart
+        else: #pi > 2.0/3.0
+            return 0.25 + lowerpart
+    elif cardstate == 'High':
+        if pi <= 2.0/3.0:
+            return lowerpart
+        else: #pi > 2.0/3.0
+            return (pi - 2.0/3.0)*3 * 0.25 + lowerpart
+    else: #No_State
+        return pi
+
+
 def calcBetValue(pi, potSize):
     assert(pi < 0.5)
     return int(float(potSize)/(1/pi-2))
@@ -19,13 +43,20 @@ def calcBetValue(pi, potSize):
 
 def postflopMakeAction(game, playerIndex, pis):
     pi = pis[playerIndex]
-    print "bet history", game.player(1-playerIndex).betHistory
+    #print "bet history", game.player(1-playerIndex).betHistory
     card_state = hmm.HMM_state(game.player(1-playerIndex).betHistory)
     bluffprob = bluff.Bluff(game.player(1-playerIndex).betHistory)
     print "playerIndex", playerIndex
     print "pi", pi
     print "card state", card_state
     print "bluff?", bluffprob
+    hmm_pi = adjustpibystate(pi, card_state)
+    print "hmm adjusted pi", hmm_pi
+    bluff_pi = bluffprob*pi + (1-bluffprob)*hmm_pi
+    print "bluff adjusted pi", bluff_pi
+
+    pi = bluff_pi
+
 
     if game.player(playerIndex).isComputer:
         if abs(game.player(0).potMoney - game.player(1).potMoney) != 0:
@@ -199,11 +230,11 @@ def postFlop(game, alterDealer):
     if not forward:
         return False, alterDealer
     ttt = 0
-    while game.player(0).potMoney != game.player(1).potMoney and game.player(0).moneyInHand != 0 and game.player(1).moneyInHand != 0:
+    while game.player(0).potMoney != game.player(1).potMoney and game.player(0).moneyInHand > 0 and game.player(1).moneyInHand > 0:
         forward, winIndex = postflopMakeAction(game, 1 - alterDealer, pi)
         if not forward:
             return False, 1 - alterDealer
-        if game.player(0).potMoney == game.player(1).potMoney or game.player(0).moneyInHand == 0 or game.player(1).moneyInHand == 0:
+        if game.player(0).potMoney == game.player(1).potMoney or game.player(0).moneyInHand <= 0 or game.player(1).moneyInHand <= 0:
             break
         forward, winIndex = postflopMakeAction(game, alterDealer, pi)
         if not forward:
