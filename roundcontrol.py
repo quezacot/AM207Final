@@ -43,10 +43,16 @@ class player:
         #if actionType == "F":
         #    self.betHistory[self.numOfGames] = []
 
-        print "Your money in hand now is", self.moneyInHand
-        print "Your in pot now total is", self.potMoney
-        print "-------------------------------"
-        print
+        if self.isComputer:
+            print "Computer's money in hand now is", self.moneyInHand
+            print "Computer's in pot now total is", self.potMoney
+            print "-------------------------------"
+            print
+        else:
+            print "Your money in hand now is", self.moneyInHand
+            print "Your in pot now total is", self.potMoney
+            print "-------------------------------"
+            print
 
         return self.moneyInHand
 
@@ -73,7 +79,7 @@ class roundcontrol:
         self.publicCards = pubcards #board cards
         self.playerList = []
         self.stageIndex = -1
-        
+
         isComputer = False
         for onehand in plycards:
             self.playerList.append(player(isComputer, onehand))
@@ -116,7 +122,7 @@ class roundcontrol:
             self.player(0).cleanHistory()
             self.player(1).cleanHistory()
             print "No cards shown because game ended early!"
-        return 
+        return
 
     def addMoney(self, money = 500):
         self.player(0).addMoney(money)

@@ -46,14 +46,14 @@ def postflopMakeAction(game, playerIndex, pis):
     #print "bet history", game.player(1-playerIndex).betHistory
     card_state = hmm.HMM_state(game.player(1-playerIndex).betHistory)
     bluffprob = bluff.Bluff(game.player(1-playerIndex).betHistory)
-    print "playerIndex", playerIndex
-    print "pi", pi
-    print "card state", card_state
-    print "bluff?", bluffprob
+##    print "playerIndex", playerIndex
+##    print "pi", pi
+##    print "card state", card_state
+##    print "bluff?", bluffprob
     hmm_pi = adjustpibystate(pi, card_state)
-    print "hmm adjusted pi", hmm_pi
+    #print "hmm adjusted pi", hmm_pi
     bluff_pi = bluffprob*pi + (1-bluffprob)*hmm_pi
-    print "bluff adjusted pi", bluff_pi
+    #print "bluff adjusted pi", bluff_pi
 
     pi = bluff_pi
 
@@ -66,13 +66,13 @@ def postflopMakeAction(game, playerIndex, pis):
                 betValue = calcBetValue(pi, game.currentmoneyinpot())
 
                 if betValue < callValue:
-                    print "Player", playerIndex, "Fold......"
+                    print "Computer", playerIndex, "Fold......"
                     game.player(playerIndex).bet(0, "F", pi, game.currentmoneyinpot())
                     print
-                    return False, playerIndex
+                    return False, 1-playerIndex
 
                 if betValue <= 2*callValue:
-                    print "Player", playerIndex, "Call Value", int(min(callValue, game.player(playerIndex).moneyInHand))
+                    print "Computer", playerIndex, "Call Value", int(min(callValue, game.player(playerIndex).moneyInHand))
                     game.player(playerIndex).bet(min(callValue, game.player(playerIndex).moneyInHand), "C", pi, game.currentmoneyinpot())
                     print
 
@@ -82,13 +82,13 @@ def postflopMakeAction(game, playerIndex, pis):
                     betValue = max(betValue, 2*game.player(1-playerIndex).lastBet)
                     betValue = min(betValue, game.player(playerIndex).moneyInHand, allInValue)
                     betValue = max(betValue, 2)
-                    print "Player", playerIndex, "Raise Value", int(betValue)
+                    print "Computer", playerIndex, "Raise Value", int(betValue)
                     game.player(playerIndex).bet(int(betValue), "R", pi, game.currentmoneyinpot())
                     print
 
             else:
                 if 0.2*pi + np.random.uniform() < 0.6:
-                    print "Player", playerIndex, "Call Value", int(min(callValue, game.player(playerIndex).moneyInHand))
+                    print "Computer", playerIndex, "Call Value", int(min(callValue, game.player(playerIndex).moneyInHand))
                     game.player(playerIndex).bet(min(callValue, game.player(playerIndex).moneyInHand), "C", pi, game.currentmoneyinpot())
                     print
                 else:
@@ -98,7 +98,7 @@ def postflopMakeAction(game, playerIndex, pis):
                     betValue = max(betValue, 2*game.player(1-playerIndex).lastBet)
                     betValue = min(betValue, game.player(playerIndex).moneyInHand, allInValue)
                     betValue = max(betValue, 2)
-                    print "Player", playerIndex, "Raise Value", int(betValue)
+                    print "Computer", playerIndex, "Raise Value", int(betValue)
                     game.player(playerIndex).bet(int(betValue), "R", pi, game.currentmoneyinpot())
                     print
 
@@ -165,7 +165,7 @@ def postflopMakeAction(game, playerIndex, pis):
                     print "You Fold......"
                     game.player(playerIndex).bet(0, "F", pi, game.currentmoneyinpot())
                     #game.player(0).hist
-                    return False, playerIndex
+                    return False, 1-playerIndex
                 else:
                     print "Wrong input"
 
@@ -194,7 +194,7 @@ def postflopMakeAction(game, playerIndex, pis):
 
                 elif action == "F":
                     game.player(playerIndex).bet(0, "F", pi, game.currentmoneyinpot())
-                    return False, playerIndex
+                    return False, 1-playerIndex
                 else:
                     print "Wrong input entered"
     return True, -1
@@ -214,10 +214,14 @@ def postFlop(game, alterDealer):
 
     # start with big and move first
 
-    print "Player 0 money:", game.player(0).moneyInHand
-    print "Player 1 money:", game.player(1).moneyInHand
+    for i in xrange(game.numPlayer):
+        if game.player(i).isComputer:
+            print "Computer's money:", game.player(i).moneyInHand
+        else:
+            print "Your money:", game.player(i).moneyInHand
+            print "Your Cards: ", game.player(i).holdcards()
+
     print "Total money on pot:", game.currentmoneyinpot()
-    print
 
     pi = []
     pi.append(winpFuncs[game.stageIndex-1](game.boardcard(), game.player(alterDealer).holdcards()))
@@ -225,10 +229,10 @@ def postFlop(game, alterDealer):
 
     forward, winIndex = postflopMakeAction(game, 1 - alterDealer, pi)
     if not forward:
-        return False, 1 - alterDealer
+        return False, winIndex
     forward, winIndex = postflopMakeAction(game, alterDealer, pi)
     if not forward:
-        return False, alterDealer
+        return False, winIndex
     ttt = 0
     while game.player(0).potMoney != game.player(1).potMoney and game.player(0).moneyInHand > 0 and game.player(1).moneyInHand > 0:
         forward, winIndex = postflopMakeAction(game, 1 - alterDealer, pi)
@@ -253,10 +257,14 @@ def postFlop(game, alterDealer):
         if not forward:
             return False, 0
 
-    print "Player 0 money:", game.player(0).moneyInHand
-    print "Player 1 money:", game.player(1).moneyInHand
+    for i in xrange(game.numPlayer):
+        if game.player(i).isComputer:
+            print "Computer's money:", game.player(i).moneyInHand
+        else:
+            print "Your money:", game.player(i).moneyInHand
+            print "Your Cards: ", game.player(i).holdcards()
+
     print "Total money on pot:", game.currentmoneyinpot()
-    print
 
     winIndex = -1
     if game.stageIndex == 3 or (game.player(1).moneyInHand == 0 and game.player(0).moneyInHand == 0):
@@ -266,19 +274,19 @@ def postFlop(game, alterDealer):
         best1, strength1 = bestfive(hand1)
 
         print "The public five cards are:", game.publicCards
-        print "Player 0 best five:", best0, "| Original cards in hand:", game.player(0).holdcards()
-        print "Player 1 best five:", best1, "| Original cards in hand:", game.player(1).holdcards()
+        print "Your best five:", best0, winningprob.determintype(best0), "| Original cards in hand:", game.player(0).holdcards()
+        print "Computer's best five:", best1, winningprob.determintype(best1), "| Original cards in hand:", game.player(1).holdcards()
 
         if strength0 == strength1:
-            winIndex = 2
+            #winIndex = -1
             print "Tie!!\n"
         elif strength0 > strength1:
             winIndex = 0
-            print "Player 0 wins!\n"
+            print "You win!\n"
         else:
             winIndex = 1
-            print "Player 1 wins!\n"
-        return False, 1-winIndex
+            print "Computer wins!\n"
+        return False, winIndex
     return True, winIndex
 
 
@@ -303,15 +311,15 @@ def distributeMoney(game, winIndex):
         game.player(1).potMoney -= tie
     elif winIndex == 0 or winIndex == 1:
         total = game.player(0).potMoney + game.player(1).potMoney
-        game.player(1-winIndex).moneyInHand += total
+        game.player(winIndex).moneyInHand += total
         game.player(0).potMoney = 0
         game.player(1).potMoney = 0
     else:
         print "Wrong index!"
 
     print "Distributing money..."
-    print "Player 0 money:", game.player(0).moneyInHand
-    print "Player 1 money:", game.player(1).moneyInHand
+    print "Your money:", game.player(0).moneyInHand
+    print "Computer's money:", game.player(1).moneyInHand
     print "Total money on pot:", game.currentmoneyinpot()
     print "################### Game Finished! ###################"
     print "################### -------------- ###################\n\n\n"
