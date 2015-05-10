@@ -164,7 +164,7 @@ def postflopMakeAction(game, playerIndex, pis):
                 elif action == "F":
                     print "You Fold......"
                     game.player(playerIndex).bet(0, "F", pi, game.currentmoneyinpot())
-                    game.player(0).hist
+                    #game.player(0).hist
                     return False, playerIndex
                 else:
                     print "Wrong input"

@@ -16,8 +16,8 @@ import winningprob
 # In[6]:
 
 def preflopMakeAction(game, playerIndex, tableIndex = 1):
+    pi = card_prob(game.player(playerIndex).holdcards()[0], game.player(playerIndex).holdcards()[1], tableIndex)
     if game.player(playerIndex).isComputer:
-        pi = card_prob(game.player(playerIndex).holdcards()[0], game.player(playerIndex).holdcards()[1], tableIndex)
         if pi >= 0.5 and tableIndex != 4:
             betValue = math.ceil((pi + 0.5)*max(1, game.player(1-playerIndex).lastBet) * 2)
             betValue = min(betValue, game.player(playerIndex).moneyInHand)
@@ -69,7 +69,7 @@ def preflop(game, alterDealer):
     '''
     
     print "User Cards: ", game.player(0).holdcards()
-    print "Computer Cards: ", game.player(1).holdcards()
+    #print "Computer Cards: ", game.player(1).holdcards()
     
     # start with computer small and move first
     game.player(alterDealer).bet(2, "")
