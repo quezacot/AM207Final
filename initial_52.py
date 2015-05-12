@@ -1,14 +1,15 @@
-
-# coding: utf-8
-
-# In[15]:
-
+#-------------------------------------------------------------------------------
+# Name:        initial_52.py
+# Purpose:     This file has convenient utilities that transfer numbers to cards,
+#              and generate a deck of all 52 cards.
+#-------------------------------------------------------------------------------
 import random
 
+# Transfer card representation from an int to a string.
 def transfer(n):
     '''
-    input is a number
-    return a string in a card
+    n: an int from [0, 12]
+    return: a string of a card
     '''
     if n>0 and n<9:
         return str(n+1)
@@ -23,9 +24,11 @@ def transfer(n):
     else:
         return str('K')
 
+# Return a card list of 52 poker cards.
+# Use 2 characters to represent one card: e.g. AS is spade A, TC is club ten, 2D is diamond two, and JH is heart J
 def cards_vec():
     '''
-    return a vector of 52 cards in poker
+    return a list of 52 cards in poker
     '''
     origina_num=range(52)
     table=[]
@@ -33,10 +36,10 @@ def cards_vec():
         if cardt%4==0:
             table.append(transfer(cardt//4)+'S')
         elif cardt%4==1:
-            table.append(transfer(cardt//4)+'H')        
+            table.append(transfer(cardt//4)+'H')
         elif cardt%4==2:
             table.append(transfer(cardt//4)+'D')
         else:
-            table.append(transfer(cardt//4)+'C')   
+            table.append(transfer(cardt//4)+'C')
     return table
 

@@ -6,6 +6,8 @@ Peiheng Hu
 Sail Wu
 Xide Xia
 
+Download all code and run gameflow.py to play with our AI.
+> python gameflow.py
 
 Our code files are splitted to following 10 files.
 
@@ -50,8 +52,8 @@ The possible states are 'Low', 'Medium', 'High', or 'No_State'. 'No_State' is re
 
 roundcontrol.py
 This file has two classes 'player' and 'roundcontrol.'
-player class is to store all parameters and handle all actions related to a player, such as their hole cards, money in hand, bet history and betting action.
-roundcontrol class is to store all parameters and handle all actions related to the table, such the money in pot, the board cards and to advance game stage.
+player class is to store all parameters and handles all actions related to a player, such as their hole cards, money in hand, bet history and betting action.
+roundcontrol class is to store all parameters and handles all actions related to the table, such the money in pot, the board cards and to advance game stage.
 
 preflop_table.py
 This stores the winning probabilities when only two hole cards are known.

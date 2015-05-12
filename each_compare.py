@@ -1,10 +1,12 @@
+#-------------------------------------------------------------------------------
+# Name:        each_compare.py
+# Purpose:     This file has the same functions in deal_compare.py but eliminates
+#              the functions that do not need after the table allCombDict_new.p is generated.
+#-------------------------------------------------------------------------------
 
-# coding: utf-8
-
-# In[2]:
-
+# These functions are the same as in deal_compare.py
 def highcard(a):
-    al=sorted([a[0][0]]+[a[1][0]]+[a[2][0]]+[a[3][0]]+[a[4][0]])   
+    al=sorted([a[0][0]]+[a[1][0]]+[a[2][0]]+[a[3][0]]+[a[4][0]])
     dic={'2':0,'3':1,'4':2,'5':4,'6':8,'7':16,'8':32,'9':64,'T':128,'J':256,'Q':512,'K':1024,'A':2048}
     tot=0
     for i in range(5):
@@ -42,7 +44,7 @@ def straight(a):
         return 10,True
     else:
         return 0,False
-    
+
 def straightflush(a):
     fv,fb=flush(a)
     sv,sb=straight(a)
@@ -122,7 +124,7 @@ def compare(a,b):
             return a,'straightflush',1
         else:
             return b,'straightflush',0
-    
+
     fourv4a,fourv1a,fourba=fourkind(a)
     fourv4b,fourv1b,fourbb=fourkind(b)
     if fourba and (not fourbb):
@@ -141,7 +143,7 @@ def compare(a,b):
                 return a,'four-of-a-kind',1
             else:
                 return b,'four-of-a-kind',0
- 
+
     fhousev4a,fhousev1a,fhouseba=fullhouse(a)
     fhousev4b,fhousev1b,fhousebb=fullhouse(b)
     if fhouseba and (not fhousebb):
@@ -159,8 +161,8 @@ def compare(a,b):
             elif fhousev1a==fhousev1b:
                 return a,'full-house',1
             else:
-                return b,'full-house',0   
-            
+                return b,'full-house',0
+
     fva,fba=flush(a)
     fvb,fbb=flush(b)
     if fba or fbb:
@@ -170,7 +172,7 @@ def compare(a,b):
             return a,'flush',1
         else:
             return b,'flush',0
-    
+
     sva,sba=straight(a)
     svb,sbb=straight(b)
     if sba or sbb:
@@ -179,8 +181,8 @@ def compare(a,b):
         elif sva==svb:
             return a,'straight',1
         else:
-            return b,'straight',0  
-    
+            return b,'straight',0
+
     tv3a,tvra,tba=threekind(a)
     tv3b,tvrb,tbb=threekind(b)
     if tba and (not tbb):
@@ -199,7 +201,7 @@ def compare(a,b):
                 return a,'three-of-a-kind',1
             else:
                 return b,'three-of-a-kind',0
-    
+
     tuv2a,tuvra,tuba=twopairs(a)
     tuv2b,tuvrb,tubb=twopairs(b)
     if tuba and (not tubb):
@@ -218,7 +220,7 @@ def compare(a,b):
                 return a,'two-pairs',1
             else:
                 return b,'two-pairs',0
-    
+
     onev1a,onevra,oneba=onepair(a)
     onev1b,onevrb,onebb=onepair(b)
     if oneba and (not onebb):
@@ -237,7 +239,7 @@ def compare(a,b):
                 return a,'one-pair',1
             else:
                 return b,'one-pair',0
-    
+
     va=highcard(a)
     vb=highcard(b)
     if va>vb:
