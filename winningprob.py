@@ -1,12 +1,8 @@
 #-------------------------------------------------------------------------------
 # Name:        winningprob.py
-# Purpose:
+# Purpose:     computes the deterministic winning probabilities in flop, turn,
+#              and river stages.
 #
-# Author:      Yj
-#
-# Created:     01/05/2015
-# Copyright:   (c) Yj 2015
-# Licence:     <your licence>
 #-------------------------------------------------------------------------------
 import deal_compare as dc
 import each_compare as ec
@@ -39,9 +35,11 @@ def bestfive(sevencards):
             lstr = cstr
     return list(permu[lind]), lstr
 
+# return a card list of the 52 poker cards that excludes some cards.
 def possiblecards(exclude):
     return [ c for c in ALLCARDS if c not in exclude ]
 
+# determine what type of the five cards is.
 def determintype(fivecards):
     funclist = [dc.straightflush, dc.fourkind, dc.fullhouse, dc.flush, dc.straight, dc.threekind, dc.twopairs, dc.onepair]
     for i in xrange(len(funclist)):
@@ -53,7 +51,18 @@ def determintype(fivecards):
 
 #==============================================================================#
 
+# compute the winning probability in river stage.
+# winc_river computes the counts and winp_river divides them to be probability.
 def winc_river(boardcards, holecards, exclude=[], samplerate=1.0, opponentholecards=None):
+    '''
+    boardcards: five board cards as a list. eg. ['KS','TH', '3C', 'KD', '3S']
+    holecards: two hile cards as a list. eg. ['AC', '9D']
+    exclude: some cards that eliminated from computing the winning probability.
+    opponentholecards: a list of two cards of possible opponent's hole card. Leave it as None indicating all possibilities.
+    return: wincount: wiin times in all permutations.
+            tiecount: tie times in all permutations.
+            totalcount: total permutations.
+    '''
     assert( len(boardcards) == 5 ) #river has five boardcards
     myhighfive, mystrength = bestfive(boardcards + holecards)
     # the rest possible cards of opponent's hole cards
@@ -77,7 +86,12 @@ def winc_river(boardcards, holecards, exclude=[], samplerate=1.0, opponentholeca
             tiecount += 1
     return wincount, tiecount, totalcount
 
+# compute the winning probability in river stage.
 def winp_river(boardcards, holecards, exclude=[], samplerate=1.0, opponentholecards=None):
+    '''
+    inputs are the same as winc_river
+    return the winning probability.
+    '''
     wincount, tiecount, totalcount= winc_river(boardcards, holecards, exclude, samplerate=samplerate, opponentholecards=opponentholecards)
     return ( wincount + 0.5*tiecount ) / totalcount
 
