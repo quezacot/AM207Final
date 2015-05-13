@@ -95,7 +95,7 @@ def preflopMakeAction(game, playerIndex, tableIndex = 1):
                     #print "Debug..........", game.player(1-playerIndex).lastBet, betValue
                     betAmount = raw_input("Enter the amount you want to raise:\n")
                     while int(betAmount) < betValue or int(betAmount) > min(game.player(playerIndex).moneyInHand, game.player(1-playerIndex).lastBet + game.player(1-playerIndex).moneyInHand):
-                        print "Your min and max raise values are", int(betValue), min(game.player(playerIndex).moneyInHand, game.player(1-playerIndex).lastBet + game.player(1-playerIndex).moneyInHand):
+                        print "Your min and max raise values are", int(betValue), min(game.player(playerIndex).moneyInHand, game.player(1-playerIndex).lastBet + game.player(1-playerIndex).moneyInHand)
                         betAmount = raw_input("Enter the amount you want to raise:\n")
                 game.player(playerIndex).bet(int(betAmount), "R", pi, game.currentmoneyinpot())
                 print
@@ -151,20 +151,24 @@ def preflop(game, alterDealer):
 
     # All players make actions alternatively until one of the players stopped raise
     while game.player(0).potMoney != game.player(1).potMoney and game.player(0).moneyInHand != 0 and game.player(1).moneyInHand != 0:
-        tableIndex = preflopMakeAction(game, 1 - alterDealer, tableIndex)
+        forward, winIndex, tableIndex = preflopMakeAction(game, 1 - alterDealer, tableIndex)
         if not forward:
             return False, 1 - alterDealer
         if game.player(0).potMoney == game.player(1).potMoney or game.player(0).moneyInHand == 0 or game.player(1).moneyInHand == 0:
             break
-        tableIndex = preflopMakeAction(game, alterDealer, tableIndex)
+        forward, winIndex, tableIndex = preflopMakeAction(game, alterDealer, tableIndex)
         if not forward:
             return False, alterDealer
 
     # If one of the players has no money in hand, only the other player can take one more action.
     if game.player(0).moneyInHand == 0 and game.player(1).moneyInHand != 0:
-        tableIndex = preflopMakeAction(game, 1, tableIndex + 1)
+        forward, winIndex, tableIndex = preflopMakeAction(game, 1, tableIndex + 1)
+        if not forward:
+            return False, 1
     elif game.player(1).moneyInHand == 0 and game.player(0).moneyInHand != 0:
-        tableIndex = preflopMakeAction(game, 0, tableIndex + 1)
+        forward, winIndex, tableIndex = preflopMakeAction(game, 0, tableIndex + 1)
+        if not forward:
+            return False, 0
 
     for i in xrange(game.numPlayer):
         if game.player(i).isComputer:
