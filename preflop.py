@@ -11,6 +11,12 @@ from preflop_table import card_prob
 import math
 import winningprob
 
+
+# Calculate the bet value that maximizes expections
+def calcBetValue(pi, potSize):
+    assert(pi < 0.5)
+    return int(float(potSize)/(1/pi-2))
+
 # Player makes the bet action.
 def preflopMakeAction(game, playerIndex, tableIndex = 1):
     '''
@@ -21,23 +27,61 @@ def preflopMakeAction(game, playerIndex, tableIndex = 1):
     '''
     pi = card_prob(game.player(playerIndex).holdcards()[0], game.player(playerIndex).holdcards()[1], tableIndex)
     # if this player is computer, use our AI.
+    # if the player is computer, use our AI.
     if game.player(playerIndex).isComputer:
-        if pi >= 0.5 and tableIndex != 4:
-            betValue = math.ceil((pi + 0.5)*max(1, game.player(1-playerIndex).lastBet) * 2)
-            betValue = min(betValue, game.player(playerIndex).moneyInHand)
-            print "Computer", playerIndex, "Raise ", int(betValue)
-            game.player(playerIndex).bet(betValue, "R", pi, game.currentmoneyinpot())
-        else:
+        # when two players has different money in pot, the opponent raised
+        if abs(game.player(0).potMoney - game.player(1).potMoney) != 0:
             callValue = abs(game.player(0).potMoney - game.player(1).potMoney)
-            print "Computer", playerIndex, "Call ", callValue
-            game.player(playerIndex).bet(callValue, "C", pi, game.currentmoneyinpot())
+            # different strategies based on pi
+            if pi < 0.5:
+                betValue = calcBetValue(pi, game.currentmoneyinpot())
+
+                if betValue < callValue:
+                    print "Computer", playerIndex, "Fold......"
+                    game.player(playerIndex).bet(0, "F", pi, game.currentmoneyinpot())
+                    print
+                    return False, 1-playerIndex, tableIndex
+
+                if betValue <= 2*callValue:
+                    print "Computer", playerIndex, "Call Value", int(min(callValue, game.player(playerIndex).moneyInHand))
+                    game.player(playerIndex).bet(min(callValue, game.player(playerIndex).moneyInHand), "C", pi, game.currentmoneyinpot())
+                    print
+
+                else:
+                    allInValue = game.player(1-playerIndex).moneyInHand + game.player(1-playerIndex).potMoney - game.player(playerIndex).potMoney
+                    betValue = min(betValue, game.player(playerIndex).moneyInHand, allInValue)
+                    betValue = max(betValue, 2*game.player(1-playerIndex).lastBet)
+                    betValue = min(betValue, game.player(playerIndex).moneyInHand, allInValue)
+                    betValue = max(betValue, 2)
+                    print "Computer", playerIndex, "Raise Value", int(betValue)
+                    game.player(playerIndex).bet(int(betValue), "R", pi, game.currentmoneyinpot())
+                    print
+            else:
+                if 0.2*pi + np.random.uniform() < 0.6:
+                    print "Computer", playerIndex, "Call Value", int(min(callValue, game.player(playerIndex).moneyInHand))
+                    game.player(playerIndex).bet(min(callValue, game.player(playerIndex).moneyInHand), "C", pi, game.currentmoneyinpot())
+                    print
+                else:
+                    betValue = (pi-0.2) * game.currentmoneyinpot()
+                    allInValue = game.player(1-playerIndex).moneyInHand + game.player(1-playerIndex).potMoney - game.player(playerIndex).potMoney
+                    betValue = min(betValue, game.player(playerIndex).moneyInHand, allInValue)
+                    betValue = max(betValue, 2*game.player(1-playerIndex).lastBet)
+                    betValue = min(betValue, game.player(playerIndex).moneyInHand, allInValue)
+                    betValue = max(betValue, 2)
+
+                    print "Computer", playerIndex, "Raise Value", int(betValue)
+                    game.player(playerIndex).bet(int(betValue), "R", pi, game.currentmoneyinpot())
+                    print
+
+        # two players has the same money in pot, the opponent called
     # if this player is human, ask for input
     else:
         while True:
-            action = raw_input("Enter your decision: input 'C' for Call or 'R' for Raise:\n")
-            if tableIndex == 4:
-                print "You can only Call now!"
-            if action == "C" or tableIndex == 4:
+            action = raw_input("Enter your decision: input 'C' for Call or 'R' for Raise or 'F' for Fold:\n")
+            if action == "F":
+                print "You Fold......"
+                return False, 1-playerIndex, tableIndex
+            elif action == "C":
                 callValue = abs(game.player(0).potMoney - game.player(1).potMoney)
                 game.player(playerIndex).bet(callValue, "C", pi, game.currentmoneyinpot())
                 print
@@ -62,8 +106,8 @@ def preflopMakeAction(game, playerIndex, tableIndex = 1):
                 break
             else:
                 print "Wrong input entered"
-    return tableIndex
 
+    return True, playerIndex, tableIndex
 
 # Handle the game flow before flop stage
 def preflop(game, alterDealer):
@@ -91,21 +135,30 @@ def preflop(game, alterDealer):
         if game.player(i).isComputer:
             print "Computer's money:", game.player(i).moneyInHand
         else:
-            print "Your money:", game.player(i).moneyInHand
+            print "Your Money: ", game.player(i).moneyInHand
             print "Your Cards: ", game.player(i).holdcards()
 
     print "Total money on pot:", game.currentmoneyinpot()
 
     tableIndex = 1
-    tableIndex = preflopMakeAction(game, 1 - alterDealer, tableIndex)
-    tableIndex = preflopMakeAction(game, alterDealer, tableIndex)
+    forward, winIndex, tableIndex = preflopMakeAction(game, 1 - alterDealer, tableIndex)
+    # Test if game ends after the previous action
+    if not forward:
+        return False, winIndex
+    forward, winIndex, tableIndex = preflopMakeAction(game, alterDealer, tableIndex)
+    if not forward:
+        return False, winIndex
 
     # All players make actions alternatively until one of the players stopped raise
     while game.player(0).potMoney != game.player(1).potMoney and game.player(0).moneyInHand != 0 and game.player(1).moneyInHand != 0:
         tableIndex = preflopMakeAction(game, 1 - alterDealer, tableIndex)
+        if not forward:
+            return False, 1 - alterDealer
         if game.player(0).potMoney == game.player(1).potMoney or game.player(0).moneyInHand == 0 or game.player(1).moneyInHand == 0:
             break
         tableIndex = preflopMakeAction(game, alterDealer, tableIndex)
+        if not forward:
+            return False, alterDealer
 
     # If one of the players has no money in hand, only the other player can take one more action.
     if game.player(0).moneyInHand == 0 and game.player(1).moneyInHand != 0:
