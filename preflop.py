@@ -145,9 +145,13 @@ def preflop(game, alterDealer):
     # Test if game ends after the previous action
     if not forward:
         return False, winIndex
+    print "Total money on pot:", game.currentmoneyinpot()
+    print "==================="
     forward, winIndex, tableIndex = preflopMakeAction(game, alterDealer, tableIndex)
     if not forward:
         return False, winIndex
+    print "Total money on pot:", game.currentmoneyinpot()
+    print "==================="
 
     # All players make actions alternatively until one of the players stopped raise
     while game.player(0).potMoney != game.player(1).potMoney and game.player(0).moneyInHand != 0 and game.player(1).moneyInHand != 0:
@@ -169,10 +173,14 @@ def preflop(game, alterDealer):
         forward, winIndex, tableIndex = preflopMakeAction(game, 1, tableIndex + 1)
         if not forward:
             return False, 1
+        print "Total money on pot:", game.currentmoneyinpot()
+        print "==================="
     elif game.player(1).moneyInHand == 0 and game.player(0).moneyInHand != 0:
         forward, winIndex, tableIndex = preflopMakeAction(game, 0, tableIndex + 1)
         if not forward:
             return False, 0
+        print "Total money on pot:", game.currentmoneyinpot()
+        print "==================="
 
     for i in xrange(game.numPlayer):
         if game.player(i).isComputer:
