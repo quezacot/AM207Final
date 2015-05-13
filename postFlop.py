@@ -207,8 +207,8 @@ def postflopMakeAction(game, playerIndex, pis):
                     else:
                         #print "Debug..........", game.player(1-playerIndex).lastBet, betValue
                         betAmount = raw_input("Enter the amount you want to raise:\n")
-                        while int(betAmount) < betValue or int(betAmount) > min(game.player(playerIndex).moneyInHand, game.player(1-playerIndex).moneyInHand):
-                            print "Your min and max raise values are", int(betValue), min(game.player(playerIndex).moneyInHand, game.player(1-playerIndex).moneyInHand)
+                        while int(betAmount) < betValue or int(betAmount) > min(game.player(playerIndex).moneyInHand, game.player(1-playerIndex).lastBet + game.player(1-playerIndex).moneyInHand):
+                            print "Your min and max raise values are", int(betValue), min(game.player(playerIndex).moneyInHand, game.player(1-playerIndex).lastBet + game.player(1-playerIndex).moneyInHand)
                             betAmount = raw_input("Enter the amount you want to raise:\n")
                     game.player(playerIndex).bet(int(betAmount), "R", pi, game.currentmoneyinpot())
                     print
