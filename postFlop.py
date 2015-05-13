@@ -267,11 +267,13 @@ def postFlop(game, alterDealer):
         # Return at anytime the game ends.
         if not forward:
             return False, 1 - alterDealer
+        print "Total money on pot:", game.currentmoneyinpot()
         if game.player(0).potMoney == game.player(1).potMoney or game.player(0).moneyInHand <= 0 or game.player(1).moneyInHand <= 0:
             break
         forward, winIndex = postflopMakeAction(game, alterDealer, pi)
         if not forward:
             return False, alterDealer
+        print "Total money on pot:", game.currentmoneyinpot()
         ttt += 1
         if ttt > 20:
             print "Not stoping ................................................................."
