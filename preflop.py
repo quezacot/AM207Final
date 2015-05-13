@@ -65,7 +65,7 @@ def preflopMakeAction(game, playerIndex, tableIndex = 1):
     return tableIndex
 
 
-# Handle the preflop flow
+# Handle the game flow before flop stage
 def preflop(game, alterDealer):
     '''
     game: an object of all imformation of the game
@@ -82,7 +82,7 @@ def preflop(game, alterDealer):
 
     #print "Computer Cards: ", game.player(1).holdcards()
 
-    # start with computer small and move first
+    # Big blind and small blind are bet automatically
     game.player(alterDealer).bet(2, "")
     game.player(1 - alterDealer).bet(1, "")
 
@@ -100,7 +100,7 @@ def preflop(game, alterDealer):
     tableIndex = preflopMakeAction(game, 1 - alterDealer, tableIndex)
     tableIndex = preflopMakeAction(game, alterDealer, tableIndex)
 
-    # All players make actions alternatively
+    # All players make actions alternatively until one of the players stopped raise
     while game.player(0).potMoney != game.player(1).potMoney and game.player(0).moneyInHand != 0 and game.player(1).moneyInHand != 0:
         tableIndex = preflopMakeAction(game, 1 - alterDealer, tableIndex)
         if game.player(0).potMoney == game.player(1).potMoney or game.player(0).moneyInHand == 0 or game.player(1).moneyInHand == 0:
