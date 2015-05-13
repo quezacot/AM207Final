@@ -31,6 +31,7 @@ def main():
         #game.player(0).holeCards = ['TH', '8D']
         #game.player(1).holeCards = ['QD', 'JD']
         check, winIndex = preflop.preflop(game, alterDealer)
+
         if check:
             winIndex = postFlop.afterPreFlop(game, alterDealer)
         postFlop.distributeMoney(game, winIndex)

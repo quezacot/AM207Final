@@ -126,19 +126,19 @@ def postflopMakeAction(game, playerIndex, pis):
             # different strategies based on pi
             if pi < 0.5:
                 if np.random.uniform() + pi*0.1 < 0.45:
-                    print "Player", playerIndex, "Check"
+                    print "Computer", playerIndex, "Check"
                     game.player(playerIndex).bet(0, "K", pi, game.currentmoneyinpot())
                     print
                 else:
                     betValue = calcBetValue(pi, game.currentmoneyinpot())
                     betValue = min(betValue, game.player(playerIndex).moneyInHand, game.player(1-playerIndex).moneyInHand)
                     betValue = max(betValue, 2)
-                    print "Player", playerIndex, "Raise Value", int(betValue)
+                    print "Computer", playerIndex, "Raise Value", int(betValue)
                     game.player(playerIndex).bet(betValue, "R", pi, game.currentmoneyinpot())
                     print
             else:
                 if np.random.uniform() + pi*0.1 < 0.45:
-                    print "Player", playerIndex, "Check"
+                    print "Computer", playerIndex, "Check"
                     game.player(playerIndex).bet(0, "K", pi, game.currentmoneyinpot())
                     print
                 else:
@@ -148,7 +148,7 @@ def postflopMakeAction(game, playerIndex, pis):
                     betValue = max(betValue, 2*game.player(1-playerIndex).lastBet)
                     betValue = min(betValue, game.player(playerIndex).moneyInHand, allInValue)
                     betValue = max(betValue, 2)
-                    print "Player", playerIndex, "Raise Value", int(betValue)
+                    print "Computer", playerIndex, "Raise Value", int(betValue)
                     game.player(playerIndex).bet(int(betValue), "R", pi, game.currentmoneyinpot())
                     print
     # if player is human, ask for bet input

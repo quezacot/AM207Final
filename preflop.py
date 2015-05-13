@@ -202,7 +202,7 @@ def preflop(game, alterDealer):
         else:
             winIndex = 1
             print "Computer wins!\n"
-        return False, 1-winIndex
+        return False, winIndex
     return True, -1
 
 
