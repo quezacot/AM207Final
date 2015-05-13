@@ -1,3 +1,8 @@
+#-------------------------------------------------------------------------------
+# Name:        postFlop.py
+# Purpose:     Controls the game of flop, turn, and river stage. (only two hole cards are known)
+#-------------------------------------------------------------------------------
+
 import numpy as np
 import pickle
 import roundcontrol
@@ -11,8 +16,12 @@ from preflop import preflop
 import Bluff_Bayesian_new as bluff
 import Strength_HMM as hmm
 
-
+# Adjust pi given the state estimated from HMM
 def adjustpibystate(pi, cardstate):
+    '''
+    pi: the original deterministic probability pi
+    cardstate: the state estimated from HMM
+    '''
     #states = ('Low', 'Medium','High', 'No_State')
     lowerpart = pi * 0.75
     if cardstate == 'Low':
@@ -35,13 +44,19 @@ def adjustpibystate(pi, cardstate):
     else: #No_State
         return pi
 
-
+# Calculate the bet value that maximizes expections
 def calcBetValue(pi, potSize):
     assert(pi < 0.5)
     return int(float(potSize)/(1/pi-2))
 
-
+# Player makes the bet action.
 def postflopMakeAction(game, playerIndex, pis):
+    '''
+    game: an object of all imformation of the game
+    playerIndex: indicate which player is making action
+    pis: the deterministic pi of each players.
+    return: modified tableIndex.
+    '''
     pi = pis[playerIndex]
     #print "bet history", game.player(1-playerIndex).betHistory
     card_state = hmm.HMM_state(game.player(1-playerIndex).betHistory)
@@ -50,6 +65,7 @@ def postflopMakeAction(game, playerIndex, pis):
 ##    print "pi", pi
 ##    print "card state", card_state
 ##    print "bluff?", bluffprob
+    #
     hmm_pi = adjustpibystate(pi, card_state)
     #print "hmm adjusted pi", hmm_pi
     bluff_pi = bluffprob*pi + (1-bluffprob)*hmm_pi
