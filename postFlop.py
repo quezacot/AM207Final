@@ -154,6 +154,9 @@ def postflopMakeAction(game, playerIndex, pis):
     # if player is human, ask for bet input
     else:
         while True:
+            print "Computer current money in hand is ", game.player(1-playerIndex).moneyInHand
+            print "Your current money in hand is ", game.player(playerIndex).moneyInHand
+
             # next action when the other player raised.
             if abs(game.player(0).potMoney - game.player(1).potMoney) != 0:
                 action = raw_input("Enter your decision: input 'C' for Call or 'R' for Raise or 'F' for Fold:\n")
@@ -167,7 +170,7 @@ def postflopMakeAction(game, playerIndex, pis):
                     break
 
                 elif action == "R":
-                    print "Your total money: ", game.player(playerIndex).moneyInHand
+                    
                     betValue = math.ceil(game.player(1-playerIndex).lastBet * 2)
                     if betValue >= game.player(playerIndex).moneyInHand:
                         betAmount = game.player(playerIndex).moneyInHand
@@ -192,6 +195,8 @@ def postflopMakeAction(game, playerIndex, pis):
                     print "Wrong input"
             # next action when the other player called.
             else:
+                
+
                 action = raw_input("Enter your decision: input 'K' for Check or 'R' for Raise or 'F' for Fold:\n")
 
                 if action == "K":
@@ -200,7 +205,7 @@ def postflopMakeAction(game, playerIndex, pis):
                     break
 
                 elif action == "R":
-                    print "Your total money: ", game.player(playerIndex).moneyInHand
+                    
                     betValue = math.ceil(game.player(1-playerIndex).lastBet * 2)
                     if betValue >= game.player(playerIndex).moneyInHand:
                         betAmount = game.player(playerIndex).moneyInHand

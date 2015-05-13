@@ -77,6 +77,8 @@ def preflopMakeAction(game, playerIndex, tableIndex = 1):
     # if this player is human, ask for input
     else:
         while True:
+            print "Computer current money in hand is ", game.player(1-playerIndex).moneyInHand
+            print "Your current money in hand is ", game.player(playerIndex).moneyInHand
             action = raw_input("Enter your decision: input 'C' for Call or 'R' for Raise or 'F' for Fold:\n")
             if action == "F":
                 print "You Fold......"
@@ -87,7 +89,6 @@ def preflopMakeAction(game, playerIndex, tableIndex = 1):
                 print
                 break
             elif action == "R":
-                print "Your total money: ", game.player(playerIndex).moneyInHand
                 betValue = math.ceil(game.player(1-playerIndex).lastBet * 2)
                 if betValue >= min(game.player(playerIndex).moneyInHand, game.player(1-playerIndex).lastBet + game.player(1-playerIndex).moneyInHand):
                     betAmount = min(game.player(playerIndex).moneyInHand, game.player(1-playerIndex).lastBet + game.player(1-playerIndex).moneyInHand)
