@@ -51,13 +51,13 @@ class player:
         #    self.betHistory[self.numOfGames] = []
 
         if self.isComputer:
-            print "Computer's money in hand now is", self.moneyInHand
-            print "Computer's in pot now total is", self.potMoney
+            print "After action computer's money in hand now is", self.moneyInHand
+            #print "Computer's in pot now total is", self.potMoney
             print "-------------------------------"
             print
         else:
-            print "Your money in hand now is", self.moneyInHand
-            print "Your in pot now total is", self.potMoney
+            print "After action Your money in hand now is", self.moneyInHand
+            #print "Your in pot now total is", self.potMoney
             print "-------------------------------"
             print
 
