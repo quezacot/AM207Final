@@ -52,12 +52,12 @@ class player:
 
         if self.isComputer:
             print "After action computer's money in hand now is", self.moneyInHand
-            #print "Computer's in pot now total is", self.potMoney
+            print "Computer's in pot now total is", self.potMoney
             print "-------------------------------"
             print
         else:
             print "After action Your money in hand now is", self.moneyInHand
-            #print "Your in pot now total is", self.potMoney
+            print "Your in pot now total is", self.potMoney
             print "-------------------------------"
             print
 
