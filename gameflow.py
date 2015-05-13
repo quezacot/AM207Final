@@ -1,12 +1,6 @@
 #-------------------------------------------------------------------------------
-# Name:        gameflow
-# Purpose:
-#
-# Author:      Yj
-#
-# Created:     09/05/2015
-# Copyright:   (c) Yj 2015
-# Licence:     <your licence>
+# Name:        gameflow.py
+# Purpose:     combines preflop.py and postFlop.py to operatie the over all game flow.
 #-------------------------------------------------------------------------------
 import numpy as np
 import pickle
@@ -27,9 +21,9 @@ def main():
     game.player(1).isComputer = True
     game.player(0).isComputer = False
 
-    # random dealer
+    # random choose the start dealer
     alterDealer = np.random.randint(2)
-    for i in xrange(100):
+    while(True):
         print "\n\n\n"
         print "######################################################"
         print "##################### Game Start! ####################"
