@@ -7,7 +7,6 @@ import deal_compare as dc
 import each_compare as ec
 import numpy as np
 import itertools
-import pandas as pd
 import pickle
 import initial_52
 
