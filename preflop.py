@@ -89,13 +89,13 @@ def preflopMakeAction(game, playerIndex, tableIndex = 1):
             elif action == "R":
                 print "Your total money: ", game.player(playerIndex).moneyInHand
                 betValue = math.ceil(game.player(1-playerIndex).lastBet * 2)
-                if betValue >= game.player(playerIndex).moneyInHand:
-                    betAmount = game.player(playerIndex).moneyInHand
+                if betValue >= min(game.player(playerIndex).moneyInHand, game.player(1-playerIndex).lastBet + game.player(1-playerIndex).moneyInHand):
+                    betAmount = min(game.player(playerIndex).moneyInHand, game.player(1-playerIndex).lastBet + game.player(1-playerIndex).moneyInHand)
                 else:
                     #print "Debug..........", game.player(1-playerIndex).lastBet, betValue
                     betAmount = raw_input("Enter the amount you want to raise:\n")
-                    while int(betAmount) < betValue or int(betAmount) > game.player(playerIndex).moneyInHand:
-                        print "Your min and max raise values are", int(betValue), int(game.player(playerIndex).moneyInHand)
+                    while int(betAmount) < betValue or int(betAmount) > min(game.player(playerIndex).moneyInHand, game.player(1-playerIndex).lastBet + game.player(1-playerIndex).moneyInHand):
+                        print "Your min and max raise values are", int(betValue), min(game.player(playerIndex).moneyInHand, game.player(1-playerIndex).lastBet + game.player(1-playerIndex).moneyInHand):
                         betAmount = raw_input("Enter the amount you want to raise:\n")
                 game.player(playerIndex).bet(int(betAmount), "R", pi, game.currentmoneyinpot())
                 print
