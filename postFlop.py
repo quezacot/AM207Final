@@ -261,9 +261,15 @@ def postFlop(game, alterDealer):
     # Test if game ends after the previous action
     if not forward:
         return False, winIndex
+    print "Total money on pot:", game.currentmoneyinpot()
+    print "==================="
+
     forward, winIndex = postflopMakeAction(game, alterDealer, pi)
     if not forward:
         return False, winIndex
+    print "Total money on pot:", game.currentmoneyinpot()
+    print "==================="
+
     ttt = 0 # count bet times for debug.
     # Bet is still on going if 1) players have different bet amount in pot. It means on of them raised.
     # 2) Both player still have money in hand. No one has been all in.
@@ -273,12 +279,14 @@ def postFlop(game, alterDealer):
         if not forward:
             return False, 1 - alterDealer
         print "Total money on pot:", game.currentmoneyinpot()
+        print "==================="
         if game.player(0).potMoney == game.player(1).potMoney or game.player(0).moneyInHand <= 0 or game.player(1).moneyInHand <= 0:
             break
         forward, winIndex = postflopMakeAction(game, alterDealer, pi)
         if not forward:
             return False, alterDealer
         print "Total money on pot:", game.currentmoneyinpot()
+        print "==================="
         ttt += 1
         if ttt > 20:
             print "Not stoping ................................................................."
@@ -289,10 +297,15 @@ def postFlop(game, alterDealer):
         forward, winIndex = postflopMakeAction(game, 1, pi)
         if not forward: # player 1 folded
             return False, 0
+        print "Total money on pot:", game.currentmoneyinpot()
+        print "==================="
+
     elif game.player(1).moneyInHand == 0 and game.player(0).moneyInHand != 0:
         forward, winIndex = postflopMakeAction(game, 0, pi)
         if not forward: # player 0 folded
             return False, 1
+        print "Total money on pot:", game.currentmoneyinpot()
+        print "==================="
 
     for i in xrange(game.numPlayer):
         if game.player(i).isComputer:

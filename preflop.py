@@ -146,30 +146,42 @@ def preflop(game, alterDealer):
     # Test if game ends after the previous action
     if not forward:
         return False, winIndex
+    print "Total money on pot:", game.currentmoneyinpot()
+    print "==================="
     forward, winIndex, tableIndex = preflopMakeAction(game, alterDealer, tableIndex)
     if not forward:
         return False, winIndex
+    print "Total money on pot:", game.currentmoneyinpot()
+    print "==================="
 
     # All players make actions alternatively until one of the players stopped raise
     while game.player(0).potMoney != game.player(1).potMoney and game.player(0).moneyInHand != 0 and game.player(1).moneyInHand != 0:
         forward, winIndex, tableIndex = preflopMakeAction(game, 1 - alterDealer, tableIndex)
         if not forward:
             return False, 1 - alterDealer
+        print "Total money on pot:", game.currentmoneyinpot()
+        print "==================="
         if game.player(0).potMoney == game.player(1).potMoney or game.player(0).moneyInHand == 0 or game.player(1).moneyInHand == 0:
             break
         forward, winIndex, tableIndex = preflopMakeAction(game, alterDealer, tableIndex)
         if not forward:
             return False, alterDealer
+        print "Total money on pot:", game.currentmoneyinpot()
+        print "==================="
 
     # If one of the players has no money in hand, only the other player can take one more action.
     if game.player(0).moneyInHand == 0 and game.player(1).moneyInHand != 0:
         forward, winIndex, tableIndex = preflopMakeAction(game, 1, tableIndex + 1)
         if not forward:
             return False, 1
+        print "Total money on pot:", game.currentmoneyinpot()
+        print "==================="
     elif game.player(1).moneyInHand == 0 and game.player(0).moneyInHand != 0:
         forward, winIndex, tableIndex = preflopMakeAction(game, 0, tableIndex + 1)
         if not forward:
             return False, 0
+        print "Total money on pot:", game.currentmoneyinpot()
+        print "==================="
 
     for i in xrange(game.numPlayer):
         if game.player(i).isComputer:
