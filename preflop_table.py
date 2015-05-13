@@ -1,13 +1,12 @@
-
-# coding: utf-8
-
-# In[4]:
+#-------------------------------------------------------------------------------
+# Name:        preflop_table.py
+# Purpose:     Store deterministic winning probabilities in preflop stage.
+#-------------------------------------------------------------------------------
 
 import numpy as np
 
 
-# In[10]:
-
+# The probabilities used for first bet.
 table_1=np.asarray([[	0.852	,	0.67	,	0.662	,	0.654	,	0.646	,	0.628	,	0.619	,	0.61	,	0.599	,	0.599	,	0.595	,	0.582	,	0.574	]	,
 [	0.653	,	0.824	,	0.634	,	0.626	,	0.618	,	0.6	,	0.583	,	0.575	,	0.566	,	0.558	,	0.549	,	0.541	,	0.532	]	,
 [	0.644	,	0.614	,	0.799	,	0.602	,	0.595	,	0.577	,	0.56	,	0.543	,	0.536	,	0.528	,	0.519	,	0.51	,	0.502	]	,
@@ -22,7 +21,7 @@ table_1=np.asarray([[	0.852	,	0.67	,	0.662	,	0.654	,	0.646	,	0.628	,	0.619	,	0.6
 [	0.558	,	0.514	,	0.482	,	0.453	,	0.426	,	0.4	,	0.375	,	0.366	,	0.361	,	0.363	,	0.351	,	0.537	,	0.36	]	,
 [	0.549	,	0.505	,	0.473	,	0.443	,	0.417	,	0.391	,	0.368	,	0.346	,	0.341	,	0.343	,	0.332	,	0.323	,	0.503	]	])
 
-
+# The probabilities used for second bet. (bet after another player's bet)
 table_2=np.asarray([[	0.869	,	0.634	,	0.603	,	0.571	,	0.539	,	0.498	,	0.468	,	0.439	,	0.412	,	0.407	,	0.392	,	0.382	,	0.371	]	,
 [	0.616	,	0.717	,	0.43	,	0.426	,	0.423	,	0.403	,	0.356	,	0.386	,	0.381	,	0.372	,	0.364	,	0.356	,	0.348	]	,
 [	0.583	,	0.4	,	0.694	,	0.432	,	0.429	,	0.409	,	0.395	,	0.379	,	0.377	,	0.369	,	0.361	,	0.353	,	0.344	]	,
@@ -38,6 +37,7 @@ table_2=np.asarray([[	0.869	,	0.634	,	0.603	,	0.571	,	0.539	,	0.498	,	0.468	,	0.
 [	0.335	,	0.311	,	0.307	,	0.303	,	0.3	,	0.292	,	0.288	,	0.278	,	0.284	,	0.29	,	0.281	,	0.271	,	0.429	]	]
 )
 
+# The probabilities used for third bet. (bet again that another player has bet after yourself)
 table_3=np.asarray([[	0.852	,	0.61	,	0.572	,	0.537	,	0.501	,	0.457	,	0.427	,	0.401	,	0.385	,	0.389	,	0.38	,	0.371	,	0.363	]	,
 [	0.59	,	0.726	,	0.435	,	0.424	,	0.413	,	0.39	,	0.375	,	0.37	,	0.372	,	0.366	,	0.359	,	0.351	,	0.344	]	,
 [	0.551	,	0.405	,	0.69	,	0.414	,	0.41	,	0.391	,	0.376	,	0.359	,	0.364	,	0.357	,	0.35	,	0.343	,	0.335	]	,
@@ -53,32 +53,34 @@ table_3=np.asarray([[	0.852	,	0.61	,	0.572	,	0.537	,	0.501	,	0.457	,	0.427	,	0.4
 [	0.326	,	0.307	,	0.298	,	0.292	,	0.287	,	0.281	,	0.275	,	0.265	,	0.277	,	0.284	,	0.276	,	0.267	,	0.405	]	]
 )
 
-
-# In[12]:
-
+# card index from string to int
 cards_index={'A':0,'K':1,'Q':2,'J':3,'T':4,'9':5,'8':6,'7':7,'6':8,'5':9,'4':10,'3':11,'2':12}
 
 
-# In[13]:
-
+# Query the probability table above.
 def card_prob(input_card1,input_card2,table_index):
+    '''
+    input_card1, input_card2: two hole cards.
+    table_index: which table to use.
+    return: the probability.
+    '''
     card_ind1=cards_index[input_card1[0]]
     card_ind2=cards_index[input_card2[0]]
-    
+
     if card_ind1>card_ind2:
         card_ind_high=card_ind1
         card_ind_low=card_ind2
     else:
         card_ind_high=card_ind2
         card_ind_low=card_ind1
-    
+
     if table_index==1:
         pre_flot_table=table_1
     elif table_index==2:
         pre_flot_table=table_2
     else:
         pre_flot_table=table_3
-    
+
     if input_card1[1]==input_card2[1]:
         return pre_flot_table[card_ind_low][card_ind_high]
     else:

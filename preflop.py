@@ -1,7 +1,7 @@
-
-# coding: utf-8
-
-# In[9]:
+#-------------------------------------------------------------------------------
+# Name:        preflop.py
+# Purpose:     Controls the game of the preflop stage. (only two hole cards are known)
+#-------------------------------------------------------------------------------
 
 import numpy as np
 import pickle
@@ -11,12 +11,16 @@ from preflop_table import card_prob
 import math
 import winningprob
 
-
-# In[ ]:
-# In[6]:
-
+# Player makes the bet action.
 def preflopMakeAction(game, playerIndex, tableIndex = 1):
+    '''
+    game: an object of all imformation of the game
+    playerIndex: indicate which player is making action
+    tableIndex: indicate which table to use in preflop_table.py
+    return: modified tableIndex.
+    '''
     pi = card_prob(game.player(playerIndex).holdcards()[0], game.player(playerIndex).holdcards()[1], tableIndex)
+    # if this player is computer, use our AI.
     if game.player(playerIndex).isComputer:
         if pi >= 0.5 and tableIndex != 4:
             betValue = math.ceil((pi + 0.5)*max(1, game.player(1-playerIndex).lastBet) * 2)
@@ -27,6 +31,7 @@ def preflopMakeAction(game, playerIndex, tableIndex = 1):
             callValue = abs(game.player(0).potMoney - game.player(1).potMoney)
             print "Computer", playerIndex, "Call ", callValue
             game.player(playerIndex).bet(callValue, "C", pi, game.currentmoneyinpot())
+    # if this player is human, ask for input
     else:
         while True:
             action = raw_input("Enter your decision: input 'C' for Call or 'R' for Raise:\n")
@@ -60,14 +65,16 @@ def preflopMakeAction(game, playerIndex, tableIndex = 1):
     return tableIndex
 
 
-# In[7]:
-
+# Handle the preflop flow
 def preflop(game, alterDealer):
     '''
-    computer == player1
-    user == player0
+    game: an object of all imformation of the game
+    alterDealer: the dealer of this stage
     '''
+    # computer == player1
+    # user == player0
 
+    # print out human player's hole cards
     for i in xrange(game.numPlayer):
         if not game.player(i).isComputer:
             print "Your Cards: ", game.player(i).holdcards()
@@ -89,22 +96,18 @@ def preflop(game, alterDealer):
 
     print "Total money on pot:", game.currentmoneyinpot()
 
-##            print "Player 0 money:", game.player(0).moneyInHand
-##            print "Player 1 money:", game.player(1).moneyInHand
-##            print "Total money on pot:", game.currentmoneyinpot()
-##            print
-
     tableIndex = 1
     tableIndex = preflopMakeAction(game, 1 - alterDealer, tableIndex)
     tableIndex = preflopMakeAction(game, alterDealer, tableIndex)
 
+    # All players make actions alternatively
     while game.player(0).potMoney != game.player(1).potMoney and game.player(0).moneyInHand != 0 and game.player(1).moneyInHand != 0:
         tableIndex = preflopMakeAction(game, 1 - alterDealer, tableIndex)
         if game.player(0).potMoney == game.player(1).potMoney or game.player(0).moneyInHand == 0 or game.player(1).moneyInHand == 0:
             break
         tableIndex = preflopMakeAction(game, alterDealer, tableIndex)
 
-
+    # If one of the players has no money in hand, only the other player can take one more action.
     if game.player(0).moneyInHand == 0 and game.player(1).moneyInHand != 0:
         tableIndex = preflopMakeAction(game, 1, tableIndex + 1)
     elif game.player(1).moneyInHand == 0 and game.player(0).moneyInHand != 0:
@@ -122,7 +125,8 @@ def preflop(game, alterDealer):
     print "Total money on pot:", game.currentmoneyinpot()
 
     winIndex = -1
-    if game.player(0).moneyInHand == 0 and game.player(1).moneyInHand == 0:
+    # Advance to the end of game when one of the players has no money in hand
+    if game.player(0).moneyInHand == 0 or game.player(1).moneyInHand == 0:
 
         hand0 = game.player(0).holdcards() + game.publicCards
         hand1 = game.player(1).holdcards() + game.publicCards
@@ -143,16 +147,6 @@ def preflop(game, alterDealer):
             print "Computer wins!\n"
         return False, 1-winIndex
     return True, -1
-
-
-# In[8]:
-
-#game = roundcontrol.roundcontrol(2)
-#game.player(0).isComputer = True
-#preflop(game, 0)
-
-
-# In[ ]:
 
 
 
